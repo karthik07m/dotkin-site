@@ -1,0 +1,26 @@
+/* Shared motion vocabulary. Gaze, blink and body motion use separate SVG groups. */
+.ch { overflow:visible; }
+.ch-creature { transform-origin:50px 80px; }
+.ch-eyes { transform-origin:50px 47px; }
+.ch-face { transform-origin:50px 54px; }
+.ch-gaze { transition:transform 150ms ease-out; }
+.ch-attention { transform-origin:50px 65px;transition:transform 240ms ease-out; }
+/* No endless idle motion. An infinite animation on an SVG group repaints the whole
+   transparent DOT window every frame: measured ~18% CPU for a pet doing nothing.
+   Character.js adds .ch-blinking for a quarter second every few seconds instead. */
+.ch.ch-blinking .ch-eyes { animation:ch-blink 240ms ease-in-out; }
+.ch[data-expression="excited"] .ch-creature { animation:ch-celebrate 650ms ease-in-out 3; }
+.ch[data-expression="loved"] .ch-creature,.ch[data-expression="wink"] .ch-creature { animation:ch-ack 800ms ease-in-out 2; }
+.pet .ch-fx > g,.companion-pet .ch-fx > g { animation:ch-float 3s ease-in-out 3; }
+.ch[data-expression="excited"] .ch-fx > g { animation:ch-twinkle 700ms ease-in-out 3; }
+@keyframes ch-blink { 0%,100%{transform:scaleY(1)} 40%,60%{transform:scaleY(.08)} }
+@keyframes ch-celebrate { 0%,100%{transform:translateY(0) scale(1)} 18%{transform:translateY(2px)} 48%{transform:translateY(-7px) rotate(-4deg)} 78%{transform:translateY(-2px) rotate(3deg)} }
+@keyframes ch-ack { 0%,100%{transform:rotate(0)} 30%{transform:rotate(-4deg) translateY(1px)} 70%{transform:rotate(4deg) translateY(-1px)} }
+@keyframes ch-float { 0%,100%{transform:translateY(0);opacity:.6} 50%{transform:translateY(-4px);opacity:1} }
+@keyframes ch-twinkle { 0%,100%{opacity:.45} 50%{opacity:1;transform:translateY(-3px)} }
+.motion-paused *, .motion-paused *::before, .motion-paused *::after { animation-play-state:paused!important; }
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation:none!important;transition:none!important;scroll-behavior:auto!important; }
+  .ch-gaze,.ch-attention { transform:none!important; }
+}
+.ch-eye-light { transition:transform 150ms ease-out; }

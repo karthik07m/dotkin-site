@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dotkin — one task, your full attention</title>
+<meta name="description" content="Dotkin is a free desktop focus tracker that coaches you with your own logged sessions. Timed blocks, a morning planner, a desktop companion called DOT, and your data in one plain file on your machine.">
+<meta property="og:title" content="Dotkin — one task, your full attention">
+<meta property="og:description" content="A desktop focus tracker coached by your own data. Free, no account.">
+<meta property="og:image" content="img/today.jpg">
+<link rel="icon" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="character.css">
+<style>
+:root{
+  --bg:#0b0e14;--panel:#131822;--panel-2:#0f1520;--line:#242c3b;--line-hi:#33405a;
+  --tx:#e6ebf4;--tx-dim:#a1acc0;--tx-faint:#7d879e;
+  --amber:#f0a848;--amber-dim:rgba(240,168,72,.12);--violet:#9d8df1;--green:#3fc98a;--blue:#5aa9e6;
+  --r:16px;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+.ic,.brief-badge,.dot-orbit::after,.facts .card i{font-variant-emoji:text}
+html{scroll-behavior:smooth}
+body{margin:0;font:16px/1.6 'IBM Plex Sans',system-ui,sans-serif;color:var(--tx);background:radial-gradient(ellipse at 80% 0,rgba(240,168,72,.06),transparent 48%),var(--bg);-webkit-font-smoothing:antialiased}
+a{color:var(--amber)}
+img{max-width:100%;height:auto;display:block}
+h1,h2,h3{margin:0;letter-spacing:-.03em;line-height:1.15}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+.kicker{color:var(--amber);font:700 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:10px;border:1px solid var(--line-hi);background:var(--panel);color:var(--tx);font-weight:600;text-decoration:none;cursor:pointer;transition:background 160ms,border-color 160ms,transform 160ms}
+.btn:hover{border-color:var(--amber);background:var(--amber-dim)}
+.btn-primary{background:var(--amber);border-color:var(--amber);color:#2a1c06;box-shadow:0 6px 24px rgba(240,168,72,.28)}
+.btn-primary:hover{background:#f6b866;transform:translateY(-1px)}
+.btn small{font:500 11px var(--mono);opacity:.75}
+.mono{font-family:var(--mono)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+figure.shot{margin:0}
+.shot{border:1px solid var(--line-hi);border-radius:14px;overflow:hidden;background:var(--panel-2);box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.shot-bar{display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.shot-bar i{width:10px;height:10px;border-radius:50%;background:var(--line-hi)}
+section{padding:88px 0}
+.sec-h{max-width:640px;margin-bottom:44px}
+.sec-h h2{font-size:clamp(28px,4vw,40px);margin:12px 0 14px}
+.sec-h p{color:var(--tx-dim);font-size:17px}
+
+/* nav */
+nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:rgba(11,14,20,.78);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;min-height:64px;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;color:var(--tx);text-decoration:none;font-weight:700;letter-spacing:.02em}
+.logo img{width:30px;height:30px;border-radius:8px}
+nav ul{display:flex;gap:26px;list-style:none;margin:0;padding:0}
+nav ul a{color:var(--tx-dim);text-decoration:none;font-size:14px;font-weight:500}
+nav ul a:hover{color:var(--tx)}
+@media(max-width:720px){nav ul{display:none}}
+
+/* hero */
+.hero{padding:96px 0 40px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:40px;align-items:center}
+.hero h1{font-size:clamp(40px,6.4vw,72px);margin:16px 0 20px}
+.hero h1 em{font-style:normal;color:var(--amber)}
+.hero .lead{font-size:19px;color:var(--tx-dim);max-width:520px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin:32px 0 14px}
+.meta{color:var(--tx-faint);font:13px var(--mono)}
+.meta a{color:var(--tx-dim)}
+.dot-stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px}
+.dot-orbit{position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid rgba(240,168,72,.14);background:radial-gradient(circle,rgba(240,168,72,.1),transparent 68%);pointer-events:none}
+.dot-orbit::after{content:'✦︎';position:absolute;right:26px;top:36px;color:var(--amber);font-size:16px}
+.pet{position:relative;width:240px;height:240px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pet svg{width:220px;height:220px}
+.dot-name{position:relative;color:var(--amber);font:700 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;margin-top:6px}
+.dot-says{position:relative;color:var(--tx-dim);font-size:13px;text-align:center;max-width:240px;margin-top:6px;min-height:40px}
+.hero-shot{margin-top:56px}
+@media(max-width:820px){.hero-grid{grid-template-columns:1fr}.dot-stage{order:-1;min-height:280px}}
+
+/* proof strip */
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--panel-2);padding:26px 0}
+.strip .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.strip b{display:block;font-size:15px}
+.strip span{color:var(--tx-dim);font-size:14px}
+@media(max-width:720px){.strip .wrap{grid-template-columns:1fr}}
+
+/* features */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat h3{font-size:17px;margin:14px 0 8px}
+.feat p{color:var(--tx-dim);font-size:14px}
+.feat .ic{width:40px;height:40px;border-radius:10px;background:var(--amber-dim);color:var(--amber);display:flex;align-items:center;justify-content:center;font:700 16px var(--mono)}
+.feat kbd{font:600 11px var(--mono);border:1px solid var(--line-hi);border-radius:5px;padding:1px 6px;color:var(--tx)}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+
+/* deep dives */
+.dive{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;padding:56px 0;border-top:1px solid var(--line)}
+.dive:first-of-type{border-top:0}
+.dive h3{font-size:clamp(24px,3vw,32px);margin:12px 0 14px}
+.dive p{color:var(--tx-dim)}
+.dive ul{margin:18px 0 0;padding:0;list-style:none;display:grid;gap:8px;color:var(--tx-dim);font-size:15px}
+.dive li::before{content:'◎';color:var(--amber);margin-right:10px;font-size:12px}
+.dive.flip .dive-img{order:-1}
+.dive.pair{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.pair-imgs{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:end}
+.pair-imgs img{filter:drop-shadow(0 24px 40px rgba(0,0,0,.5));cursor:zoom-in}
+@media(max-width:820px){.dive.pair{grid-template-columns:1fr}}
+.dive.stack{display:block}
+.dive.stack>div:first-child{max-width:680px}
+.dive.stack .dive-img{margin-top:28px;cursor:zoom-in}
+.shot img{cursor:zoom-in}
+.zoom-hint{display:block;margin-top:10px;color:var(--tx-faint);font:11px var(--mono)}
+dialog.lb{border:0;padding:0;background:transparent;max-width:none;max-height:none;width:100vw;height:100vh;margin:0}
+dialog.lb::backdrop{background:rgba(5,7,11,.92)}
+dialog.lb .lb-wrap{width:100vw;height:100vh;overflow:auto;display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+dialog.lb img{max-width:none;width:min(1800px,180vw);height:auto;border-radius:10px;box-shadow:0 40px 120px rgba(0,0,0,.7)}
+dialog.lb button{position:fixed;top:14px;right:16px;min-height:40px;padding:6px 14px;border-radius:9px;border:1px solid var(--line-hi);background:var(--panel);color:var(--tx);font:600 13px 'IBM Plex Sans',system-ui,sans-serif;cursor:pointer}
+.dive-buddy{display:flex;justify-content:center}
+.dive-buddy img{max-width:340px;filter:drop-shadow(0 24px 40px rgba(0,0,0,.5))}
+@media(max-width:820px){.dive{grid-template-columns:1fr;gap:28px}.dive.flip .dive-img{order:0}}
+
+/* lifebot */
+.bot{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.bot h3{font-size:clamp(24px,3vw,32px);margin:12px 0 14px}
+.bot p{color:var(--tx-dim)}
+.bot ol{margin:20px 0 0;padding:0;list-style:none;display:grid;gap:14px;counter-reset:b}
+.bot li{display:flex;gap:14px;font-size:15px;color:var(--tx-dim)}
+.bot li::before{counter-increment:b;content:counter(b);flex:0 0 28px;height:28px;border-radius:8px;background:var(--amber-dim);color:var(--amber);font:700 12px/28px var(--mono);text-align:center}
+.bot li b{color:var(--tx)}
+.brief{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.brief-hd{display:flex;align-items:center;gap:9px;margin-bottom:10px;font-size:12px;color:var(--tx-faint)}
+.brief-badge{font:700 10px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--amber);background:var(--amber-dim);padding:3px 8px;border-radius:6px}
+.brief-hd time{margin-left:auto;font:11px var(--mono)}
+.brief-body{font-size:14.5px;line-height:1.6;color:var(--tx)}
+.brief-body .num{color:var(--amber);font:600 13.5px var(--mono)}
+.brief-acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.brief-acts span{min-height:32px;padding:5px 11px;border:1px solid var(--line-hi);border-radius:8px;font-size:12px;font-weight:600;display:inline-flex;align-items:center}
+.brief-foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font:11px var(--mono);color:var(--tx-faint)}
+.bot-rules{margin-top:44px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.bot-rules .card{padding:16px 18px}
+.bot-rules b{display:block;font-size:14px;margin-bottom:4px}
+.bot-rules span{color:var(--tx-dim);font-size:13px}
+@media(max-width:900px){.bot-rules{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:820px){.bot{grid-template-columns:1fr;gap:28px}}
+@media(max-width:560px){.bot-rules{grid-template-columns:1fr}}
+
+/* day timeline */
+.day{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;counter-reset:step}
+.day .card{position:relative;padding-top:52px}
+.day .card::before{counter-increment:step;content:counter(step,decimal-leading-zero);position:absolute;top:18px;left:22px;color:var(--amber);font:700 12px var(--mono);letter-spacing:.1em}
+.day b{display:block;font-size:15px;margin-bottom:6px}
+.day span{color:var(--tx-dim);font-size:14px}
+.day time{display:block;color:var(--tx-faint);font:12px var(--mono);margin-top:12px}
+@media(max-width:1000px){.day{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.day{grid-template-columns:1fr}}
+
+/* data */
+.data{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--tx-faint);font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+td code{font:13px var(--mono);color:var(--tx-dim);word-break:break-all}
+.facts{display:grid;gap:14px}
+.facts .card{display:flex;gap:14px;padding:16px 18px}
+.facts .card i{color:var(--green);font-style:normal;font-weight:700}
+.facts .card b{display:block;font-size:15px}
+.facts .card span{color:var(--tx-dim);font-size:14px}
+@media(max-width:820px){.data{grid-template-columns:1fr}}
+
+/* export + schedule */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.two h3{font-size:22px;margin:10px 0 6px}
+.two>div>p{color:var(--tx-dim);font-size:15px;margin-bottom:18px}
+.steps{display:grid;gap:10px}
+.steps .card{display:flex;gap:14px;padding:14px 16px;align-items:flex-start}
+.steps .ic{flex:0 0 34px;height:34px;border-radius:9px;background:var(--amber-dim);color:var(--amber);display:flex;align-items:center;justify-content:center;font:700 13px var(--mono)}
+.steps.clock .ic{background:var(--green-dim);color:var(--green);font-size:11px}
+.steps b{display:block;font-size:14.5px;margin-bottom:2px}
+.steps span{color:var(--tx-dim);font-size:13.5px;line-height:1.55}
+.steps code{font:12.5px var(--mono);color:var(--tx)}
+@media(max-width:820px){.two{grid-template-columns:1fr;gap:36px}}
+
+/* download */
+#download{background:linear-gradient(120deg,#1d2330,#141a24 70%);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.dl{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+.dl .card{display:flex;flex-direction:column;gap:10px}
+.dl .card.rec{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset}
+.dl h3{font-size:18px;display:flex;align-items:center;gap:10px}
+.dl .tag{font:700 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--amber);background:var(--amber-dim);padding:3px 8px;border-radius:6px}
+.dl p{color:var(--tx-dim);font-size:14px;flex:1}
+.dl .btn{justify-content:center}
+.dl .alt{font-size:13px;color:var(--tx-dim)}
+pre{margin:0;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font:13px/1.7 var(--mono);color:var(--tx-dim);overflow-x:auto}
+pre b{color:var(--tx);font-weight:500}
+.src{margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.src p{color:var(--tx-dim);font-size:15px}
+@media(max-width:900px){.dl{grid-template-columns:1fr}.src{grid-template-columns:1fr}}
+
+/* faq */
+details{border-top:1px solid var(--line);padding:18px 0}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:600;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::after{content:'+';color:var(--amber);font:400 22px var(--mono)}
+details[open] summary::after{content:'–'}
+details p{color:var(--tx-dim);margin-top:10px;max-width:720px}
+
+.rail-hint,.phone-note{display:none}
+/* phone */
+@media(max-width:600px){
+  .wrap{padding:0 16px}
+  section{padding:56px 0}
+  .sec-h{margin-bottom:28px}
+  .kicker{font-size:10px;letter-spacing:.12em}
+  .hero{padding:40px 0 24px}
+  .hero h1{margin-top:10px}
+  .dot-stage{min-height:210px;margin-bottom:8px}
+  .dot-orbit{width:190px;height:190px}
+  .dot-orbit::after{right:14px;top:22px}
+  .pet{width:150px;height:150px}
+  .pet svg{width:140px;height:140px}
+  .dot-says{display:none}
+  .hero-shot{margin:36px -16px 0;border-radius:0;border-left:0;border-right:0}
+  .dive.stack .dive-img{margin:22px -16px 0;border-radius:0;border-left:0;border-right:0}
+  /* card rows become swipeable rails instead of long stacks */
+  .grid,.day,.bot-rules{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px 14px;scrollbar-width:none}
+  .grid::-webkit-scrollbar,.day::-webkit-scrollbar,.bot-rules::-webkit-scrollbar{display:none}
+  .grid>.card,.day>.card,.bot-rules>.card{flex:0 0 82%;scroll-snap-align:start}
+  .rail-hint{display:block;color:var(--tx-faint);font:11px var(--mono);margin-top:4px}
+  /* table reads as a list: OS above its path, no mid-word breaks */
+  table thead,table tr:first-child{display:none}
+  table,table tbody,table tr,table td{display:block;width:100%}
+  table tr{padding:10px 0;border-bottom:1px solid var(--line)}
+  table td{padding:0;border:0}
+  table td:first-child{font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--tx-faint);margin-bottom:4px}
+  td code{word-break:normal;overflow-wrap:anywhere}
+  pre{white-space:pre-wrap;overflow-wrap:anywhere}
+  .dl .card.rec{order:-1}
+  .phone-note{display:block}
+}
+.phone-note{margin:0 0 18px;padding:12px 14px;border:1px solid var(--line-hi);border-radius:10px;background:var(--panel);color:var(--tx-dim);font-size:14px}
+
+footer{padding:40px 0 56px;color:var(--tx-faint);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+footer a{color:var(--tx-dim);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#"><img src="img/icon.png" alt="">Dotkin</a>
+    <ul>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#dot">DOT</a></li>
+      <li><a href="#lifebot">Lifebot</a></li>
+      <li><a href="#day">A day</a></li>
+      <li><a href="#data">Your data</a></li>
+      <li><a href="#export">Export</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a class="btn btn-primary" href="#download" data-dl-nav>Download</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker">A desktop focus tracker · free · no account</div>
+        <h1>One task.<br>Your <em>full attention.</em></h1>
+        <p class="lead">Dotkin turns your day into short, timed blocks and coaches you with the sessions you've actually logged. Not a generic pep talk. Your own data, read back to you.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#download" data-dl-primary>Download for your computer</a>
+          <a class="btn" href="#features">See what's inside</a>
+        </div>
+        <p class="meta">macOS · Windows · Linux &nbsp;·&nbsp; nothing leaves your machine</p>
+      </div>
+      <div class="dot-stage" aria-hidden="true">
+        <div class="dot-orbit"></div>
+        <div class="pet" id="hero-dot" title="That's DOT"></div>
+        <div class="dot-name">DOT · Focus companion</div>
+        <div class="dot-says" id="dot-says">Nothing running. Pick one thing and I'll keep the time.</div>
+      </div>
+    </div>
+    <figure class="shot hero-shot">
+      <div class="shot-bar"><i></i><i></i><i></i></div>
+      <img src="img/today.jpg" alt="Dotkin's Today tab: the Focus strip, a Next block picker with minute presets, DOT on the right, and the day's numbers" width="2000" height="1333">
+    </figure>
+  </div>
+</header>
+
+<div class="strip">
+  <div class="wrap">
+    <div><b>Coached by your own data</b><span>Insights say something useful after the very first block, and get sharper every day you log.</span></div>
+    <div><b>One plain file, on your disk</b><span>Everything lives in readable JSON. Back it up, sync it, edit it. No cloud, no login.</span></div>
+    <div><b>A real desktop app</b><span>Its own window, a tray icon, and a companion that sits on your desktop. No browser tab to lose.</span></div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec-h">
+      <div class="kicker">What's inside</div>
+      <h2>Everything you need to start a block. Nothing that gets in the way of finishing it.</h2>
+      <p>Each feature earns its place by removing a reason to not start.</p>
+    </div>
+    <div class="grid">
+      <div class="card feat"><div class="ic">▶︎</div><h3>Timed focus blocks</h3><p>Pick a task, pick 10 to 45 minutes, go. While a block runs there are exactly two buttons: Block complete and Pause. Everything else waits behind a menu.</p></div>
+      <div class="card feat"><div class="ic">☀︎</div><h3>Morning planner</h3><p>Opens at login into a planner that asks for today's three. Yesterday evening's pick for "tomorrow's first task" is already selected.</p></div>
+      <div class="card feat"><div class="ic">◎</div><h3>DOT on your desktop</h3><p>A floating companion that keeps the time, holds your three priorities, parks the thought that just interrupted you, answers a quick question, and pokes you once when you're late. It never steals focus.</p></div>
+      <div class="card feat"><div class="ic">⌘</div><h3>Command palette</h3><p><kbd>Cmd</kbd>+<kbd>K</kbd> switches tabs, starts a block on any task, or turns whatever you typed into a task or a parked thought. <kbd>Space</kbd> pauses from anywhere.</p></div>
+      <div class="card feat"><div class="ic">✦︎</div><h3>Live project map</h3><p>Every project, section and task as a graph. Circles grow with the focused time you've logged on them. Click an open task to start a block on it.</p></div>
+      <div class="card feat"><div class="ic">#</div><h3>Inbox, tags, notes</h3><p>Capture and commitment are separate steps. Parked thoughts land in an Inbox, then become a task, a line in today's note, or nothing.</p></div>
+      <div class="card feat"><div class="ic">≡</div><h3>Daily markdown notes</h3><p>Each day is written as <span class="mono">YYYY-MM-DD.md</span> with the plan, blocks, notes and a reflection. Point it at an Obsidian vault and it links up.</p></div>
+      <div class="card feat"><div class="ic">↗︎</div><h3>Streaks and insights</h3><p>The streak sits in the header. DOT earns new looks at 1, 3, 6, 12 and 24 hours of focus. After three days, a missed usual start time gets one nudge, not ten.</p></div>
+      <div class="card feat"><div class="ic">◇︎</div><h3>Lifebot (optional)</h3><p>A coaching chat, morning briefing and proactive check-ins powered by Claude, reading your own log. <a href="#lifebot">How it works</a>.</p></div>
+    </div>
+    <span class="rail-hint">swipe for more →</span>
+  </div>
+</section>
+
+<section id="dot" style="padding-top:0">
+  <div class="wrap">
+    <div class="dive">
+      <div>
+        <div class="kicker">Meet DOT</div>
+        <h3>A companion that keeps time, not tabs.</h3>
+        <p>DOT is a small focus device with display eyes. It follows your cursor, blinks, and rests its eyes when you pause. Pick its body, colour and something to wear once, then it stays out of the way. Click it and it shows exactly what matters right now.</p>
+        <ul>
+          <li><b>Nothing running:</b> today's three priorities, each with its own play button.</li>
+          <li><b>Mid-block:</b> time left in large type, plus Done, Pause and +5.</li>
+          <li><b>Just finished:</b> Again, Something else, or Stop for now.</li>
+          <li><b>Always:</b> Park a thought. Type it, press Enter, the block keeps running.</li>
+          <li><b>Always:</b> Ask. A question turns the bubble into a small chat with Lifebot.</li>
+        </ul>
+      </div>
+      <div class="dive-img dive-buddy"><img src="img/buddy-running.png" alt="The desktop DOT panel during a block: 25:00 left on Payment integration, with Done, Pause, +5, Park a thought and Ask" width="608" height="1280"></div>
+    </div>
+
+    <div class="dive pair">
+      <div>
+        <div class="kicker">New in 1.0.3 and later</div>
+        <h3>Ask it. And let it poke you.</h3>
+        <p><b>Ask DOT</b> turns the bubble into a small chat. Your questions and its answers stay in a thread, Enter sends, and it answers from your live data in bubble-sized lines: "what's still pending?", "should I take a break?". It is the same Lifebot as the app's tab. <i>Open in Lifebot</i> continues the thread in the app.</p>
+        <p style="margin-top:14px"><b>The poke.</b> Once there are three logged days, if your usual first block is thirty minutes overdue with nothing logged, DOT hops, chimes softly, opens its bubble on its own and looks expectant: one line for the day above your priorities with their play buttons. Start a block within five minutes and it cheers. Dismiss it and it waits twenty minutes, glances at you, then gets bored and yawns. Once a day, never after 2pm, and an ignored bubble folds itself away.</p>
+      </div>
+      <div class="dive-img pair-imgs">
+        <img src="img/buddy-ask.png" alt="Ask DOT: a small chat thread in the desktop bubble. Question: what is still pending today? Answer: three of five left, Payment integration first, 45 minutes logged." width="608" height="1280">
+        <img src="img/buddy-poke.png" alt="The poke: DOT's bubble opened on its own with the line 9:40 came and went, I saved your seat, one of five priorities done, the priorities with play buttons, and a Later button" width="608" height="1280">
+      </div>
+    </div>
+
+    <div class="dive stack">
+      <div>
+        <div class="kicker">The Map</div>
+        <h3>See where your hours actually went.</h3>
+        <p>A live graph of everything you've planned, shown here on a real profile with three projects and ten hours logged. Each project keeps to its own side. Hover a node to trace its branch, drag one and the rest follows on springs. The running block pulses and the path to it lights up.</p>
+        <ul>
+          <li>Click a project or section to fold it.</li>
+          <li>Click an open task to start a block on it.</li>
+          <li>Pan, pinch, or Ctrl+scroll to zoom. Reset layout replays the opening.</li>
+        </ul>
+      </div>
+      <figure class="shot dive-img"><img src="img/map-live.jpg" alt="The Map tab on a real profile: three colour-coded projects, 29 tasks, and node sizes that grow with the focused time logged on each" width="2000" height="1205"></figure>
+    </div>
+
+    <div class="dive stack">
+      <div>
+        <div class="kicker">Focus mode</div>
+        <h3>Two buttons. That's the whole interface while you work.</h3>
+        <p>Starting a block pins that task to the Focus strip, so the strip and the timer always agree about what you're doing. When the block ends the app asks one line: where did you stop? The next block on that task shows it as <i>Last time</i>.</p>
+        <ul>
+          <li>Breaks, stopping early, energy and +5/+10 wait behind the … menu.</li>
+          <li>Deleting a task is one click, with Undo in the toast.</li>
+          <li>Closing the window hides to the tray. A running timer keeps counting.</li>
+        </ul>
+      </div>
+      <figure class="shot dive-img"><img src="img/focus.jpg" alt="A running block: a timer ring, the task name, Block complete and Pause buttons, and DOT concentrating" width="2000" height="833"></figure>
+    </div>
+
+    <div class="dive stack">
+      <div>
+        <div class="kicker">The Log</div>
+        <h3>Your day, written down for you.</h3>
+        <p>The Log tab opens with today's note: the thoughts you kept and a reflection box. Only today's file is ever rewritten, so anything you edit in past days is safe. Point the notes folder at an Obsidian vault to link and search there.</p>
+      </div>
+      <figure class="shot dive-img"><img src="img/daily-note.jpg" alt="The Log tab showing today's markdown note with plan, blocks and reflection" width="2000" height="759"></figure>
+    </div>
+  </div>
+</section>
+
+<section id="lifebot" style="padding-top:0">
+  <div class="wrap">
+    <div class="bot">
+      <div>
+        <div class="kicker">Lifebot · optional · bring your own key</div>
+        <h3>A coach that argues back with your own numbers.</h3>
+        <p>Add an Anthropic API key and Claude reads your actual log: blocks, tasks, streaks, what's carried over. No generic productivity advice. If your setup is wrong, it says so.</p>
+        <ol>
+          <li><div><b>Morning briefing.</b> Before you pick today's three, one read on the shape of the day: what carried over, what's pending, what's gone stale.</div></li>
+          <li><div><b>Proactive check-ins.</b> On open, after a block, when priorities lock. What's pending, the single biggest risk, one specific suggestion. Ninety words, tops.</div></li>
+          <li><div><b>Chat when you want it.</b> Sequence my day, help me choose a task, or talk a stuck afternoon through. It knows the data, so it can push back.</div></li>
+          <li><div><b>Ask from the desktop.</b> The same Lifebot inside DOT's bubble, told to keep answers short. The poke's morning line is written from your numbers too.</div></li>
+        </ol>
+      </div>
+      <div class="brief" aria-label="Example Lifebot briefing">
+        <div class="brief-hd"><span class="brief-badge">◇︎ Lifebot</span> after your last block <time>14:20</time></div>
+        <div class="brief-body">Pending: <span class="num">4</span> tasks in Thesis, <span class="num">7</span> in Generic todos. Biggest risk: the daily list resets every morning and you've completed <span class="num">2</span> of <span class="num">11</span> on it three days running. That's a list problem, not a focus problem. Cut it to the three you'd actually defend, and put the rest under a project so they stop expiring.</div>
+        <div class="brief-acts"><span>Sequence my day</span><span>◇︎ Talk to Lifebot</span></div>
+        <div class="brief-foot">Example. Real briefings only cite numbers that exist in your file.</div>
+      </div>
+    </div>
+    <div class="bot-rules">
+      <div class="card"><b>Works without it</b><span>Tracking, timers, planner, map, notes and rule-based insights need no key and no internet.</span></div>
+      <div class="card"><b>Your key, your bill</b><span>Usage goes to your own Anthropic account. Coaching chats cost cents. Nothing subscription-shaped.</span></div>
+      <div class="card"><b>Key never touches the page</b><span>Stored on your machine, used only by the app's main process, sent only to Anthropic, only when you ask.</span></div>
+      <div class="card"><b>No invented scores</b><span>It cites statistics that are in your data or none at all. No productivity grade, no manufactured concern.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="day" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-h">
+      <div class="kicker">How a day goes</div>
+      <h2>Built around the shape of a real workday.</h2>
+    </div>
+    <div class="day">
+      <div class="card"><b>Opens at login</b><span>A new day means the morning planner. Pick today's three. Yesterday's choice for first task is pre-selected.</span><time>08:40</time></div>
+      <div class="card"><b>Start a block</b><span>One task, 25 minutes, Let's focus. DOT keeps the time on your desktop while the app window stays out of the way.</span><time>09:05</time></div>
+      <div class="card"><b>Park the interruption</b><span>An idea lands mid-block. Click DOT, type it, Enter. It's in the Inbox and the timer never stopped.</span><time>11:20</time></div>
+      <div class="card"><b>Set up tomorrow</b><span>From 5pm, once a block is logged, Today asks for tomorrow's first task. One decision fewer in the morning.</span><time>17:15</time></div>
+      <div class="card"><b>Reflect</b><span>The Log shows the day as a note. Write one line. Insights now have one more day to work with.</span><time>18:00</time></div>
+    </div>
+    <span class="rail-hint">swipe for more →</span>
+  </div>
+</section>
+
+<section id="data">
+  <div class="wrap">
+    <div class="sec-h">
+      <div class="kicker">Your data</div>
+      <h2>One file. Yours. Readable without the app.</h2>
+      <p>No account to create, no server to trust. Dotkin writes a single JSON file on your machine and shows you exactly where it is.</p>
+    </div>
+    <div class="data">
+      <table>
+        <tr><th>OS</th><th>Where your data lives</th></tr>
+        <tr><td>macOS</td><td><code>~/Library/Application Support/focus-deck/focusdeck.json</code></td></tr>
+        <tr><td>Windows</td><td><code>%APPDATA%\focus-deck\focusdeck.json</code></td></tr>
+        <tr><td>Linux</td><td><code>~/.config/focus-deck/focusdeck.json</code></td></tr>
+      </table>
+      <div class="facts">
+        <div class="card"><i>✓︎</i><div><b>Atomic writes, kept history</b><span>If the file ever fails to parse, the app keeps a timestamped copy rather than overwriting it. If it parses but still won't open, say after a hand edit, the app says so and saves nothing until it's fixed.</span></div></div>
+        <div class="card"><i>✓︎</i><div><b>Daily snapshots</b><span>The first save of each day copies the file to a snapshots folder. The last 14 are kept for rollback.</span></div></div>
+        <div class="card"><i>✓︎</i><div><b>Sync it your way</b><span>Dropbox, iCloud Drive, git. It's a file. The optional Drive export feeds a Claude morning briefing.</span></div></div>
+        <div class="card"><i>✓︎</i><div><b>API key stays in the main process</b><span>If you add a Claude key for Lifebot, it's never exposed to the page and only ever sent to Anthropic when you chat.</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="export" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-h">
+      <div class="kicker">Export · Schedule</div>
+      <h2>Take it anywhere. Let the clock do the nagging.</h2>
+      <p>Nothing is locked in, and the things that should happen on a schedule already do.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="kicker">Export</div>
+        <h3>Four ways your data leaves the app</h3>
+        <p>There is no export button because the file is the export. Settings shows every path below.</p>
+        <div class="steps">
+          <div class="card"><div class="ic">{ }</div><div><b>The JSON file itself</b><span>Copy <code>focusdeck.json</code> and you have everything: projects, tasks, every block, notes, streaks. Readable in any editor, safe to sync with Dropbox or git.</span></div></div>
+          <div class="card"><div class="ic">.md</div><div><b>Daily markdown notes</b><span>One <code>YYYY-MM-DD.md</code> per day with the plan, blocks, stop notes and reflection. Choose the folder in Settings. Point it at Obsidian and the notes link and search there.</span></div></div>
+          <div class="card"><div class="ic">▲</div><div><b>Google Drive export</b><span>Flip on Drive sync in Settings and every save writes a small <code>focusdeck-sync.json</code> to a folder named <code>Focus Deck</code> in your Drive (kept for compatibility): pending tasks, today's plan, focus minutes. Drive for desktop is detected automatically.</span></div></div>
+          <div class="card"><div class="ic">14</div><div><b>Dated snapshots</b><span>The first save of each day copies the file into a snapshots folder next to it. The last 14 are kept. Rolling back is copying one over.</span></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="kicker">Schedule</div>
+        <h3>What runs on a clock</h3>
+        <p>Set once, then forget. None of it needs a key or an internet connection except the last one.</p>
+        <div class="steps clock">
+          <div class="card"><div class="ic">login</div><div><b>Opens with your computer</b><span>On by default. A new day means the morning planner is already up when you sit down.</span></div></div>
+          <div class="card"><div class="ic">wk</div><div><b>Routines with a weekly goal</b><span>Gym, cooking, dishes: recurring items with a target per week and an editable time. Counted and tracked, but never as focus time, so they can't pad your numbers.</span></div></div>
+          <div class="card"><div class="ic">5pm</div><div><b>Tomorrow, decided today</b><span>From 5pm, once a block is logged, Today asks for tomorrow's first task. The next morning it's pre-selected.</span></div></div>
+          <div class="card"><div class="ic">1×</div><div><b>One poke, not ten</b><span>After three days of history, if your usual first block is thirty minutes overdue, DOT hops, chimes and opens its bubble with your priorities. Once a day, quiet after 2pm, and a Later button. Block-complete alerts fire from the tray even when the window is hidden.</span></div></div>
+          <div class="card"><div class="ic">◇︎</div><div><b>Daily briefing on your phone</b><span>Point a Claude scheduled task at the Drive export file. It runs in the cloud at the hour you pick, reads the file, and sends a notification only when something is worth surfacing. Optional, and set up in Claude, not in the app.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <div class="sec-h">
+      <div class="kicker">Download</div>
+      <h2>Get Dotkin <span id="dl-ver" class="mono" style="color:var(--tx-dim);font-size:.6em;letter-spacing:0"></span></h2>
+      <p>Install it once and it behaves like any other app on your machine. Open at login is on by default, so tomorrow morning it's already waiting with the planner.</p>
+    </div>
+    <p class="phone-note" id="phone-note">Dotkin is a desktop app. Open this page on your Mac, Windows or Linux computer to install it, or grab the file here and move it over.</p>
+    <div class="dl" id="dl-cards">
+      <div class="card" data-os="mac">
+        <h3>macOS <span class="tag" hidden>Recommended for you</span></h3>
+        <p>Apple Silicon (M1 and later). Drag to Applications. Open at login is set for you.</p>
+        <a class="btn btn-primary" data-file="mac">Download .dmg <small>arm64</small></a>
+        <span class="alt">Apple Silicon only for now.</span>
+      </div>
+      <div class="card" data-os="win">
+        <h3>Windows <span class="tag" hidden>Recommended for you</span></h3>
+        <p>Windows 10 or 11, x64 and ARM64 in one installer. Adds a Start menu entry and a tray icon.</p>
+        <a class="btn btn-primary" data-file="win">Download installer <small>.exe</small></a>
+        <span class="alt">Prefer no install? <a data-file="winPortable">Portable .exe</a>. Unsigned for now, so SmartScreen asks once: More info → Run anyway.</span>
+      </div>
+      <div class="card" data-os="linux">
+        <h3>Linux <span class="tag" hidden>Recommended for you</span></h3>
+        <p>Any modern distro. Mark it executable and run. No package manager needed.</p>
+        <a class="btn btn-primary" data-file="linux">Download AppImage <small>x64</small></a>
+        <span class="alt">Uses the tray where your desktop supports it.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-h">
+      <div class="kicker">Questions</div>
+      <h2>Short answers.</h2>
+    </div>
+    <details open><summary>Wasn't this called Focus Deck?</summary><p>Yes, until September 2026. Same app, new name. Existing data, the Drive export folder and the settings file keep their old names on purpose, so nothing breaks when you update.</p></details>
+    <details><summary>Is it really free?</summary><p>Yes. No account, no subscription, no telemetry. The only thing that can cost money is the optional Lifebot chat, which uses your own Anthropic API key and is billed to you by Anthropic. Typical coaching chats cost cents.</p></details>
+    <details><summary>Will DOT nag me?</summary><p>Gently. The poke, the one that opens the bubble and chimes, fires at most once a day, only after three days of history, only when your usual start is thirty minutes overdue, and never after 2pm. Later dismisses it. Between blocks, DOT drops a short line above its head every half hour or so during the day: what's pinned, what's next, how long since your last block. It fades in twelve seconds, and touching the pet or the app resets the clock. Ask and the poke's written line need the optional API key; the poke and the nudges don't.</p></details>
+    <details><summary>Does it need the internet?</summary><p>No. Tracking, timers, the planner, the map, notes and insights all work offline. Only Lifebot talks to a server, and only when you send it a message.</p></details>
+    <details><summary>What happens when I close the window?</summary><p>It hides to the tray so a running timer keeps counting. Quit properly from the tray menu. Open at login can be turned off from the tray or in Settings.</p></details>
+    <details><summary>Can I use it with Obsidian?</summary><p>Yes. Settings has a Daily notes folder. Point it at your vault and each day's note appears there as plain markdown, linkable and searchable like any other note.</p></details>
+    <details><summary>Is this a Pomodoro app?</summary><p>Close, but not dogmatic. Blocks are 10 to 45 minutes, breaks are optional, and running past the planned time is treated as a win rather than a mistake.</p></details>
+    <details><summary>Windows says "Windows protected your PC". Is it safe?</summary><p>Yes. The installer isn't code-signed yet, so SmartScreen shows that screen for any new app. Click More info, then Run anyway. It happens once. Intel Mac builds aren't published yet; run from source in about a minute.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year"></span> Dotkin · made by Karthik</span>
+    <span><a href="#features">Features</a> &nbsp;·&nbsp; <a href="#data">Your data</a> &nbsp;·&nbsp; <a href="#download">Download</a></span>
+  </div>
+</footer>
+
+<dialog class="lb" id="lb"><div class="lb-wrap"><img alt=""></div><button type="button">Close ✕</button></dialog>
+<script src="character.js"></script>
+<script>
+// ---- Downloads -------------------------------------------------------------
+// Point RELEASE at wherever the installers live. Default is a downloads/ folder
+// next to this page; for GitHub Releases use e.g.
+//   'https://github.com/karthik07m/dotkin-site/releases/latest/download/'
+// Names use dots because GitHub renames release assets that way.
+var VERSION = '1.0.7';
+var RELEASE = 'https://github.com/karthik07m/dotkin-site/releases/latest/download/';
+var FILES = {
+  mac:         'Dotkin-' + VERSION + '-arm64.dmg',
+  win:         'Dotkin.Setup.' + VERSION + '.exe',
+  winPortable: 'Dotkin.' + VERSION + '.exe',
+  linux:       'Dotkin-' + VERSION + '.AppImage'
+};
+var LABEL = { mac: 'Download for macOS', win: 'Download for Windows', linux: 'Download for Linux' };
+
+document.getElementById('dl-ver').textContent = 'v' + VERSION;
+document.getElementById('year').textContent = new Date().getFullYear();
+document.querySelectorAll('[data-file]').forEach(function (a) {
+  a.href = RELEASE + encodeURIComponent(FILES[a.dataset.file]);
+  a.setAttribute('download', '');
+});
+
+function detectOS() {
+  var p = ((navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '').toLowerCase();
+  if (p.indexOf('mac') === 0) return 'mac';
+  if (p.indexOf('win') === 0) return 'win';
+  if (p.indexOf('linux') === 0) return 'linux';
+  return null;
+}
+var os = detectOS();
+if (os) {
+  var card = document.querySelector('[data-os="' + os + '"]');
+  card.classList.add('rec');
+  card.querySelector('.tag').hidden = false;
+  document.getElementById('dl-cards').prepend(card);
+  var primary = document.querySelector('[data-dl-primary]');
+  primary.textContent = LABEL[os];
+  primary.href = RELEASE + encodeURIComponent(FILES[os]);
+  primary.setAttribute('download', '');
+} else {
+  document.querySelector('[data-dl-primary]').textContent = 'Get it for Mac, Windows or Linux';
+  document.getElementById('phone-note').style.display = 'block';
+}
+
+// ---- Click any screenshot to see it at full size --------------------------
+var lb = document.getElementById('lb'), lbImg = lb.querySelector('img');
+document.querySelectorAll('.shot img, .dive-buddy img, .pair-imgs img').forEach(function (img) {
+  img.addEventListener('click', function () { lbImg.src = img.src; lbImg.alt = img.alt; lb.showModal(); });
+});
+lb.addEventListener('click', function () { lb.close(); });
+
+// ---- Hero DOT, rendered by the app's own character code --------------------
+var stage = document.getElementById('hero-dot'), says = document.getElementById('dot-says');
+if (window.Character) {
+  stage.innerHTML = Character.svg({ palette: 'amber', silhouette: 'deck', accessory: 'none', expression: 'happy', size: 220 });
+  var ch = stage.querySelector('svg');
+  var mx = null, my = null, raf = 0, onScreen = true;
+  function track() { raf = 0; Character.lookAt(ch, mx, my); }
+  if (window.IntersectionObserver) new IntersectionObserver(function (en) { onScreen = en[0].isIntersecting; }).observe(stage);
+  document.addEventListener('mousemove', function (e) {
+    mx = e.clientX; my = e.clientY;
+    if (!raf && onScreen) raf = requestAnimationFrame(track);
+  }, { passive: true });
+  var lines = ['Small steps. Real progress.', 'One task is enough to start.', 'I keep the time. You keep the thread.', 'Park the thought. The block keeps running.'];
+  var moods = ['loved', 'excited', 'wink', 'happy'], i = 0;
+  stage.addEventListener('click', function () {
+    i = (i + 1) % lines.length;
+    says.textContent = lines[i];
+    Character.setExpression(ch, moods[i]);
+  });
+}
+</script>
+</body>
+</html>
