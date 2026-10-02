@@ -1,0 +1,28 @@
+# Appends each release asset's download count to downloads.csv once a day.
+# The log lives on the `stats` branch so main, and the Pages build, stay quiet.
+name: Download counts
+on:
+  schedule:
+    - cron: '17 6 * * *'   # 06:17 UTC; GitHub may run it a little late
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: stats
+      - name: Append today's counts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          today=$(date -u +%F)
+          if grep -q "^\"$today\"" downloads.csv; then echo "Already logged $today"; exit 0; fi
+          gh api "repos/$GITHUB_REPOSITORY/releases" --paginate \
+            --jq ".[] | .tag_name as \$t | .assets[] | [\"$today\", \$t, .name, .download_count] | @csv" >> downloads.csv
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -qam "Downloads $today"
+          git push -q
