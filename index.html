@@ -391,8 +391,7 @@ footer a{color:var(--tx-dim);text-decoration:none}
         <h3>macOS <span class="tag" hidden>Recommended for you</span></h3>
         <p>Apple Silicon (M1 and later). Open the .dmg and drag Dotkin to Applications.</p>
         <a class="btn btn-primary" data-file="mac">Download .dmg <small>arm64</small></a>
-        <span class="alt">The build isn't signed with an Apple Developer ID yet, so macOS blocks the first launch. After dragging it to Applications, run this once in Terminal, then open Dotkin as usual:</span>
-        <pre>xattr -cr /Applications/Dotkin.app</pre>
+        <span class="alt">Not notarized by Apple yet, so macOS blocks the first launch. Click Done, then open System Settings → Privacy &amp; Security, scroll down and click Open Anyway. It asks once.</span>
       </div>
       <div class="card" data-os="win">
         <h3>Windows <span class="tag" hidden>Recommended for you</span></h3>
@@ -471,7 +470,7 @@ footer a{color:var(--tx-dim);text-decoration:none}
       <h2>Questions</h2>
     </div>
     <details><summary>Is it really free?</summary><p>Yes. No account, no subscription, no telemetry. The only thing that can cost money is the optional Lifebot chat, which uses your own Anthropic API key and is billed to you by Anthropic. Typical coaching chats cost cents.</p></details>
-    <details><summary>macOS says Dotkin is damaged or can't be opened. Is it safe?</summary><p>Yes. The build isn't signed with a paid Apple Developer ID yet, and macOS blocks any downloaded app without one. Drag Dotkin to Applications, open Terminal, paste <code>xattr -cr /Applications/Dotkin.app</code> and press Return, then open Dotkin as usual. That clears the download flag macOS put on the app. You do it once per version.</p></details>
+    <details><summary>macOS says it can't verify Dotkin. Is it safe?</summary><p>Yes. The build isn't notarized by Apple yet, which needs a paid developer account, so macOS blocks the first launch of any app like it. Click Done, open System Settings → Privacy &amp; Security, scroll down to the line about Dotkin and click Open Anyway. On macOS 14 or earlier, right-click the app and choose Open. It asks once per version. If macOS says the app is damaged instead, run <code>xattr -cr /Applications/Dotkin.app</code> in Terminal once, then open it as usual.</p></details>
     <details><summary>Windows says "Windows protected your PC". Is it safe?</summary><p>Yes. The installer isn't code-signed yet, so SmartScreen shows that screen for any new app. Click More info, then Run anyway. It happens once.</p></details>
     <details><summary>Does it need the internet?</summary><p>No. Tracking, timers, the planner, the map, notes and insights all work offline. Only Lifebot talks to a server.</p></details>
     <details><summary>Will DOT nag me?</summary><p>Once a day at most. The poke, the one that opens the bubble and chimes, fires only after three days of history, only when your usual start is thirty minutes overdue, and never after 2pm. Later dismisses it. Between blocks, DOT drops a short line above its head every half hour or so during the day: what's pinned, what's next, how long since your last block. It fades in twelve seconds.</p></details>
