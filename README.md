@@ -5,6 +5,11 @@ https://karthik07m.github.io/dotkin-site/. Installers are published as releases 
 this repo; the page's download buttons read the latest one.
 
 `character.js` and `character.css` are copies of the app's DOT renderer.
+`map.js` is the app's Map tab running on the demo profile: the code between its
+two COPY lines is `renderMap` and friends from the app's `src/index.html`, with
+the two changes listed at its top, and the map styles in `index.html` are the
+app's `.map` rules scoped to `#live-map`. Copy them across when the map changes.
+Touch screens keep the static `img/map-live.jpg`.
 
 ## Download counts
 

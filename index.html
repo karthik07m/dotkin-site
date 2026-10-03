@@ -64,7 +64,13 @@ nav ul a:hover{color:var(--tx)}
 .hero h1{font-size:clamp(40px,6.4vw,72px);margin:16px 0 20px}
 .hero h1 em{font-style:normal;color:var(--amber)}
 .hero .lead{font-size:19px;color:var(--tx-dim);max-width:520px}
-.cta{display:flex;flex-wrap:wrap;gap:12px;margin:32px 0 14px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 14px}
+/* the coaching line, as the app writes it */
+.proof{margin-top:24px;max-width:540px;background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:12px;padding:14px 16px}
+.proof p{font-size:15px;line-height:1.6;color:var(--tx)}
+.proof .brief-badge{margin-right:8px;vertical-align:1px}
+.proof .num{color:var(--amber);font:600 14px var(--mono)}
+.proof small{display:block;margin-top:8px;color:var(--tx-faint);font:11px/1.5 var(--mono)}
 .meta{color:var(--tx-faint);font:13px var(--mono)}
 .meta a{color:var(--tx-dim)}
 .dot-stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px}
@@ -118,6 +124,44 @@ dialog.lb button{position:fixed;top:14px;right:16px;min-height:40px;padding:6px 
 .dive-buddy{display:flex;justify-content:center}
 .dive-buddy img{max-width:min(340px,100%);filter:drop-shadow(0 24px 40px rgba(0,0,0,.5))}
 @media(max-width:820px){.dive{grid-template-columns:1fr;gap:28px}.dive.flip .dive-img{order:0}}
+
+/* the app's Map, live: its styles copied from src/index.html, scoped here */
+#live-map{--panel:#131822;--panel-2:#1a212e}
+#live-map .day-hd{font-size:11.5px;font-weight:700;color:var(--tx-dim);letter-spacing:.05em;text-transform:uppercase;margin:0 0 6px;display:flex;justify-content:space-between;align-items:baseline}
+#live-map .day-tot{font-family:var(--mono);color:var(--tx-faint);font-weight:500}
+#live-map .card{background:linear-gradient(170deg,var(--panel-2),var(--panel) 62%);border:1px solid var(--line-hi);border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+#live-map .blk{padding:9px 13px;border-radius:8px;background:var(--panel-2);border:1px solid var(--line);font:13px var(--mono);color:var(--tx-dim);cursor:pointer;transition:.15s}
+#live-map .blk:hover{border-color:var(--line-hi);color:var(--tx)}
+#live-map .map-wrap{position:relative;padding:0;overflow:hidden;}
+#live-map .map-tools{position:absolute;top:10px;right:12px;display:flex;gap:6px;z-index:1;}
+#live-map .map{display:block;width:100%;height:auto;max-height:78vh;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;}
+#live-map .map.dragging,#live-map .map:active{cursor:grabbing;}
+#live-map .map-dot{fill:var(--line-hi);opacity:.55;}
+#live-map .map text{font-size:12px;fill:var(--tx);paint-order:stroke;stroke:var(--panel);stroke-width:3.5px;stroke-linejoin:round;pointer-events:none;}
+#live-map .map .map-dim{fill:var(--tx-faint);font-size:11px;}
+#live-map .map .map-root{fill:#1a1206;font-size:13px;font-weight:700;stroke:none;}
+#live-map .map-links line{stroke-width:1.3;opacity:.36;transition:opacity .18s;}
+#live-map .map-links line.flow{stroke:var(--amber);opacity:.95;stroke-width:1.8;stroke-dasharray:5 7;animation:map-flow .9s linear infinite;}
+#live-map .map-node{cursor:pointer;transition:opacity .18s;}
+#live-map .map-core{fill:currentColor;transition:r .15s;}
+#live-map .map-halo{fill:currentColor;opacity:0;transition:opacity .18s;}
+#live-map .map-hub .map-core{filter:drop-shadow(0 0 7px currentColor);}
+#live-map .map-hub text{font-weight:600;fill:var(--tx-dim);font-size:11.5px;}
+#live-map .map-hub.shut .map-core{fill:var(--panel);stroke:currentColor;stroke-width:2.5;stroke-dasharray:3 3;}
+#live-map .map-task text{opacity:.7;}
+#live-map .map-task.done{opacity:.35;}
+#live-map .map-task.done text{text-decoration:line-through;}
+#live-map .map-node.pinned .map-core{stroke:var(--tx);stroke-width:1.2;}
+#live-map .map-node:hover .map-halo,#live-map .map-node.hl .map-halo{opacity:.2;}
+#live-map .map-node:hover text,#live-map .map-node.hl text{opacity:1;fill:var(--tx);}
+#live-map .map-node.live .map-halo{opacity:.4;transform-box:fill-box;transform-origin:center;animation:map-pulse 1.7s ease-out infinite;}
+#live-map .map.focus .map-node:not(.hl){opacity:.16;}
+#live-map .map.focus .map-links line:not(.hl){opacity:.06;}
+#live-map .map.focus .map-links line.hl{opacity:.95;stroke-width:2;}
+#live-map .map[data-far] .map-task text{display:none;}
+#live-map .map[data-far] .map-task.hl text,#live-map .map[data-far] .map-task:hover text{display:inline;}
+@keyframes map-pulse{0%{transform:scale(1);opacity:.45}100%{transform:scale(2.3);opacity:0}}
+@keyframes map-flow{to{stroke-dashoffset:-12}}
 
 /* lifebot */
 .bot{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
@@ -257,6 +301,10 @@ footer a{color:var(--tx-dim);text-decoration:none}
         <div class="kicker">Desktop focus timer · free · no account</div>
         <h1>One task.<br>Your <em>full attention.</em></h1>
         <p class="lead">Dotkin runs your day as short, timed blocks, one task at a time. Then it tells you what your own log shows: which block length you finish, which breaks bring you back, and what a late start costs you.</p>
+        <div class="proof">
+          <p><span class="brief-badge">Morning plan</span>Your own log: on days you start <span class="num">before 1pm</span> you average <span class="num">1h 37m</span> of focus, versus <span class="num">37m</span> otherwise.</p>
+          <small>A line the app wrote for the demo profile below. Worked out on your computer from four or more logged days, no AI key needed.</small>
+        </div>
         <div class="cta">
           <a class="btn btn-primary" href="#download" data-dl-primary>Download for your computer</a>
           <a class="btn" href="#day">See how a day goes</a>
@@ -413,9 +461,9 @@ footer a{color:var(--tx-dim);text-decoration:none}
     <div class="dive stack">
       <div>
         <h3>See where your hours went.</h3>
-        <p>The Map draws every project, section and task as a live graph, shown here on a demo profile with three projects and fourteen hours logged. Circles grow with focused time. Hover to trace a branch, drag a node and the rest follows on springs, click a task to start a block on it. The running block pulses and the path to it lights up.</p>
+        <p>The Map draws every project, section and task as a live graph. Circles grow with focused time, and the running block pulses with its path lit. This one is the app's own map code running on the demo profile, so try it: hover to trace a branch, drag a circle and the rest follows on springs, click a project to fold it, click a task to move the running block there. Ctrl+scroll or pinch zooms.</p>
       </div>
-      <figure class="shot dive-img"><img src="img/map-live.jpg" alt="The Map tab: three colour-coded projects and a daily list, 21 tasks, node sizes that grow with focused time, and a dashed path lit to the running block" width="2000" height="1491" loading="lazy"></figure>
+      <div class="dive-img" id="live-map"><figure class="shot"><img src="img/map-live.jpg" alt="The Map tab: three colour-coded projects and a daily list, 21 tasks, node sizes that grow with focused time, and a dashed path lit to the running block" width="2000" height="1491" loading="lazy"></figure></div>
     </div>
 
     <div class="dive stack">
@@ -499,6 +547,7 @@ footer a{color:var(--tx-dim);text-decoration:none}
 
 <dialog class="lb" id="lb"><div class="lb-wrap"></div><button type="button">Close ✕</button></dialog>
 <script src="character.js"></script>
+<script src="map.js"></script>
 <script>
 // ---- Downloads -------------------------------------------------------------
 // Point RELEASE at wherever the installers live. Default is a downloads/ folder
