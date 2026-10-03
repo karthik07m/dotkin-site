@@ -178,6 +178,8 @@ td code{font:13px var(--mono);color:var(--tx-dim);word-break:break-all}
 .dl p{color:var(--tx-dim);font-size:14px}
 .dl .btn{justify-content:center}
 .dl .alt{font-size:13px;color:var(--tx-dim)}
+.sum{font:11px/1.5 var(--mono);color:var(--tx-faint);overflow-wrap:anywhere}
+.sum code{color:var(--tx-dim)}
 pre{margin:0;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font:13px/1.7 var(--mono);color:var(--tx-dim);overflow-x:auto}
 pre b{color:var(--tx);font-weight:500}
 @media(max-width:900px){.dl{grid-template-columns:1fr}}
@@ -277,7 +279,7 @@ footer a{color:var(--tx-dim);text-decoration:none}
 
 <div class="strip">
   <div class="wrap">
-    <div><b>Coached by your own log</b><span>Insights say something useful after the very first block, and get sharper every day you log.</span></div>
+    <div><b>Coached by your own log</b><span>Insights start after three logged blocks and get sharper every day you log.</span></div>
     <div><b>One plain file, on your disk</b><span>Everything lives in readable JSON. Back it up, sync it, edit it. No cloud, no login.</span></div>
     <div><b>A real desktop app</b><span>Its own window, a tray icon, and a companion that sits on your desktop. No browser tab to lose.</span></div>
   </div>
@@ -310,7 +312,7 @@ footer a{color:var(--tx-dim);text-decoration:none}
           <li>Closing the window hides to the tray. A running timer keeps counting.</li>
         </ul>
       </div>
-      <figure class="shot dive-img"><img src="img/focus.jpg" alt="A running block: 17:21 left of 25 minutes on Draft the methods section, the note from last time, Block complete and Pause, DOT concentrating, and the Focus strip below" width="2000" height="1321" loading="lazy"></figure>
+      <figure class="shot dive-img"><img src="img/focus.jpg" alt="A running block: 17:21 left of 25 minutes on Draft the methods section, the note from last time, Block complete and Pause, and DOT concentrating" width="2000" height="749" loading="lazy"></figure>
     </div>
 
     <div class="dive">
@@ -391,13 +393,16 @@ footer a{color:var(--tx-dim);text-decoration:none}
         <h3>macOS <span class="tag" hidden>Recommended for you</span></h3>
         <p>Apple Silicon (M1 and later). Open the .dmg and drag Dotkin to Applications.</p>
         <a class="btn btn-primary" data-file="mac" data-goatcounter-click="download-mac" data-goatcounter-title="Download: macOS dmg">Download .dmg <small>arm64</small></a>
+        <span class="sum" data-sum="mac" hidden>SHA-256 <code></code></span>
         <span class="alt">Not notarized by Apple yet, so macOS blocks the first launch. Click Done, then open System Settings → Privacy &amp; Security, scroll down and click Open Anyway. It asks once.</span>
       </div>
       <div class="card" data-os="win">
         <h3>Windows <span class="tag" hidden>Recommended for you</span></h3>
         <p>Windows 10 or 11, x64 and ARM64 in one installer. Adds a Start menu entry and a tray icon.</p>
         <a class="btn btn-primary" data-file="win" data-goatcounter-click="download-windows" data-goatcounter-title="Download: Windows installer">Download installer <small>.exe</small></a>
+        <span class="sum" data-sum="win" hidden>SHA-256 <code></code></span>
         <span class="alt">Prefer no install? <a data-file="winPortable" data-goatcounter-click="download-windows-portable" data-goatcounter-title="Download: Windows portable">Portable .exe</a>. Unsigned for now, so SmartScreen asks once: More info → Run anyway.</span>
+        <span class="sum" data-sum="winPortable" hidden>Portable SHA-256 <code></code></span>
       </div>
     </div>
   </div>
@@ -473,6 +478,7 @@ footer a{color:var(--tx-dim);text-decoration:none}
     <details><summary>Is it really free?</summary><p>Yes. No account, no subscription, no telemetry. The only thing that can cost money is the optional Lifebot chat, which uses your own Anthropic API key and is billed to you by Anthropic. Typical coaching chats cost cents.</p></details>
     <details><summary>macOS says it can't verify Dotkin. Is it safe?</summary><p>Yes. The build isn't notarized by Apple yet, which needs a paid developer account, so macOS blocks the first launch of any app like it. Click Done, open System Settings → Privacy &amp; Security, scroll down to the line about Dotkin and click Open Anyway. On macOS 14 or earlier, right-click the app and choose Open. It asks once per version. If macOS says the app is damaged instead, run <code>xattr -cr /Applications/Dotkin.app</code> in Terminal once, then open it as usual.</p></details>
     <details><summary>Windows says "Windows protected your PC". Is it safe?</summary><p>Yes. The installer isn't code-signed yet, so SmartScreen shows that screen for any new app. Click More info, then Run anyway. It happens once.</p></details>
+    <details><summary>How do I check the download is the real file?</summary><p>Each download button shows the file's SHA-256 checksum, read from the release itself. On a Mac, run <code>shasum -a 256</code> followed by the file's path in Terminal. On Windows, run <code>Get-FileHash</code> followed by the file's path in PowerShell. The long string it prints should match the one under the button exactly.</p></details>
     <details><summary>Does it need the internet?</summary><p>No. Tracking, timers, the planner, the map, notes and insights all work offline. Only Lifebot talks to a server.</p></details>
     <details><summary>Will DOT nag me?</summary><p>Once a day at most. The poke, the one that opens the bubble and chimes, fires only after three days of history, only when your usual start is thirty minutes overdue, and never after 2pm. Later dismisses it. Between blocks, DOT drops a short line above its head every half hour or so during the day: what's pinned, what's next, how long since your last block. It fades in twelve seconds.</p></details>
     <details><summary>What happens when I close the window?</summary><p>It hides to the tray so a running timer keeps counting. Quit properly from the tray menu. Open at login can be turned off from the tray or in Settings.</p></details>
@@ -487,7 +493,7 @@ footer a{color:var(--tx-dim);text-decoration:none}
   <div class="wrap">
     <span>© <span id="year"></span> Dotkin · made by Karthik</span>
     <span><a href="#day">A day</a> &nbsp;·&nbsp; <a href="#data">Your data</a> &nbsp;·&nbsp; <a href="#download">Download</a></span>
-    <span style="flex-basis:100%">This page counts visits and download clicks with <a href="https://www.goatcounter.com">GoatCounter</a>: no cookies, nothing that identifies you. The app itself sends nothing.</span>
+    <span style="flex-basis:100%">This page counts visits and download clicks with <a href="https://www.goatcounter.com">GoatCounter</a>: no cookies, nothing that identifies you. The app itself has no analytics.</span>
   </div>
 </footer>
 
@@ -534,6 +540,20 @@ if (os) {
   document.querySelector('[data-dl-primary]').textContent = 'Get it for Mac or Windows';
   document.getElementById('phone-note').style.display = 'block';
 }
+
+// ---- Checksums, read from the release so they can't drift from the files ----
+fetch('https://api.github.com/repos/karthik07m/dotkin-site/releases/tags/v' + VERSION)
+  .then(function (r) { return r.ok ? r.json() : null; })
+  .then(function (rel) {
+    if (!rel) return;
+    var sha = {};
+    rel.assets.forEach(function (a) { if (a.digest) sha[a.name] = a.digest.replace(/^sha256:/, ''); });
+    document.querySelectorAll('[data-sum]').forEach(function (el) {
+      var h = sha[FILES[el.dataset.sum]];
+      if (h) { el.querySelector('code').textContent = h; el.hidden = false; }
+    });
+  })
+  .catch(function () {});   // no checksum line beats a wrong one
 
 // ---- Click any screenshot to see it at full size --------------------------
 var lb = document.getElementById('lb'), lbImg = null;
